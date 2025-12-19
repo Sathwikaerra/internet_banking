@@ -1040,15 +1040,15 @@ const handleOtpModalKey = (
       <div className="flex-1 w-full flex flex-col justify-center px-6 lg:px-16 bg-white">
         <div className="w-full max-w-xl mx-auto">
           {/* Mobile logo */}
-          <div className="lg:hidden text-center mb-8">
+          {/* <div className="lg:hidden text-center mb-8">
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-xl bg-gray-800 text-white mb-4 shadow-xl">
               <Image src={MobileLogo} alt="NetBank Logo" width={48} height={48} className="object-contain" />
             </div>
             <h1 className="text-3xl font-bold text-gray-900 mb-1">NetBank</h1>
             <p className="text-muted-foreground font-medium">Secure Digital Banking</p>
-          </div>
+          </div> */}
 
-          <Card className="shadow-2xl border border-gray-200 bg-white">
+          <Card className="shadow-2xl border mt-5 border-gray-200 bg-white">
             <CardHeader className="space-y-4 pb-4">
               <div className="flex justify-center">
                 <Image
