@@ -40,7 +40,16 @@ import MerchantOffers from "@/components/pages/MerchantOffers";
 import Footer from "@/components/pages/Footer";
 import { Search, Calendar, Download, Printer, Filter } from "lucide-react";
 import { PageType } from "../layout/dashboard-layout";
+import React, { useMemo } from 'react';
 const GOLD = "#ebc60a";
+
+const OVERVIEW_DATA = [
+  { label: 'EMI', amount: 25000, colorClass: 'bg-red-500', hex: '#ef4444' },       // Red
+  { label: 'Loans', amount: 15000, colorClass: 'bg-orange-500', hex: '#f97316' },  // Orange
+  { label: 'Savings', amount: 50000, colorClass: 'bg-emerald-500', hex: '#10b981' }, // Emerald
+  { label: 'Spendings', amount: 35000, colorClass: 'bg-blue-500', hex: '#3b82f6' },  // Blue
+  { label: 'Remaining', amount: 25000, colorClass: 'bg-indigo-500', hex: '#6366f1' }, // Indigo
+];
 
 // ─────────────────────────────────────────────
 // MASTER STATIC DATA - ACCOUNTS
@@ -366,20 +375,6 @@ const quickActions = [
 ];
 
 
-// const exploreProducts = [
-//     { icon: Smartphone, label: "Recharge" },
-//         { icon: Smartphone, label: "Electricity " },
-
-//   { icon: CreditCard, label: "Cards" },
-//   { icon: Wallet, label: "Banking" },
-//   { icon: Target, label: "Investing" },
-//   { icon: TrendingUp, label: "Lending" },
-//   { icon: ShoppingCart, label: "Shopping" },
-//   { icon: PieChart, label: "Wealth" },
-//   { icon: Clock, label: "Loans" },
-// ];
-
-// Helpers
 
 
 const exploreProducts = [
@@ -432,12 +427,31 @@ const printRecentTransactions = (html: string) => {
 export function Dashboard({ onNavigate }: { onNavigate?: (page: PageType) => void }) {
   const { user } = useAuth();
 
+    const totalAmount = useMemo(() => {
+    return OVERVIEW_DATA.reduce((acc, curr) => acc + curr.amount, 0);
+  }, []);
+
+  const gradientString = useMemo(() => {
+    let currentPercentage = 0;
+    const parts = OVERVIEW_DATA.map((item) => {
+      const start = currentPercentage;
+      const percentage = (item.amount / totalAmount) * 100;
+      const end = currentPercentage + percentage;
+     
+      currentPercentage = end;
+     
+      return `${item.hex} ${start}% ${end}%`;
+    });
+    return `conic-gradient(${parts.join(', ')})`;
+  }, [totalAmount]);
+
   // State management
   const [selectedAccountId, setSelectedAccountId] = useState<"overview" | string>("overview");
   const [showAll, setShowAll] = useState(false);
   const [expandedRow, setExpandedRow] = useState<string | null>(null);
   const [showBalanceFor, setShowBalanceFor] = useState<{ [key: string]: boolean }>({});
   const [showMoreProducts, setShowMoreProducts] = useState(false);
+  const [selectedCardFilter, setSelectedCardFilter] = useState<"all" | string>("all");
 
   // Filter states
   const [searchQuery, setSearchQuery] = useState("");
@@ -806,44 +820,7 @@ export function Dashboard({ onNavigate }: { onNavigate?: (page: PageType) => voi
             })}
           </div>
 
-          {/* Explore Products */}
-          {/* <Card className="shadow-sm rounded-xl mt-3">
-            <CardHeader className="pb-0 pt-1">
-              <CardTitle className="text-xs font-semibold text-gray-800">
-                Explore Products
-              </CardTitle>
-            </CardHeader>
 
-            <CardContent className="text-[10px] space-y-1">
-              <div className="grid grid-cols-4 gap-2 place-items-center mt-1">
-                {(showMoreProducts ? exploreProducts : exploreProducts.slice(0, 4)).map(
-                  (item, idx) => {
-                    const Icon = item.icon;
-                    return (
-                      <div
-                        key={idx}
-                        className="flex flex-col items-center cursor-pointer hover:opacity-80"
-                      >
-                        <div className="w-10 h-10 border rounded-full flex items-center justify-center border-[#233b77]">
-                          <Icon className="w-4 h-4" style={{ color: GOLD }} />
-                        </div>
-                        <p className="text-[#233b77] font-medium mt-1 text-[8px]">
-                          {item.label}
-                        </p>
-                      </div>
-                    );
-                  }
-                )}
-              </div>
-
-              <button
-                onClick={() => setShowMoreProducts(!showMoreProducts)}
-                className="w-full flex items-center justify-between text-[11px] font-semibold text-[#233b77] py-1.5 px-2 bg-blue-50 hover:bg-blue-100 rounded-md"
-              >
-                {showMoreProducts ? "View Less" : "View All Offers for You"} →
-              </button>
-            </CardContent>
-          </Card> */}
 
           <CIBILScoreCard />
         </div>
@@ -853,49 +830,82 @@ export function Dashboard({ onNavigate }: { onNavigate?: (page: PageType) => voi
           <div className="space-y-3">
             {/* OVERVIEW CARD OR BIG ACCOUNT CARD */}
             {isOverview ? (
-              <Card className="rounded-xl shadow-md p-5 bg-gradient-to-br from-white via-slate-100 to-slate-200 border border-slate-200">
-                <CardHeader className="px-0 pt-0 pb-2">
-                  <CardTitle className="text-xs flex justify-between items-center">
-                    Overview
-                    <span className="text-[10px] text-gray-500">
-                      All Accounts & Debit Cards
-                    </span>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="px-0 pt-1 space-y-3 text-[11px]">
-                  <div className="grid grid-cols-3 gap-4">
-                    <div>
-                      <p className="text-gray-500 text-[10px]">Total Balance</p>
-                      <p className="text-sm font-bold text-[#111827]">
-                        {"₹" +
-                          totalBalance.toLocaleString("en-IN", {
-                            maximumFractionDigits: 2,
-                          })}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-gray-500 text-[10px]">
-                        Number of Accounts
-                      </p>
-                      <p className="text-sm font-bold text-[#111827]">
-                        {accountsData.length}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-gray-500 text-[10px]">
-                        Total Reward Points
-                      </p>
-                      <p className="text-sm font-bold text-[#111827]">
-                        {totalPoints.toLocaleString("en-IN")}
-                      </p>
+               <Card className="rounded-xl shadow-md p-5 bg-gradient-to-br from-white via-slate-50 to-slate-100 border border-slate-200">
+      <CardHeader className="px-0 pt-0 pb-4">
+        <CardTitle className="text-sm font-bold text-slate-800 flex justify-between items-center">
+          <div className="flex items-center gap-2">
+            <div className="p-1.5 bg-blue-100 rounded-md">
+                <Wallet className="w-4 h-4 text-blue-600" />
+            </div>
+            Financial Overview
+          </div>
+          <span className="text-[10px] font-normal text-slate-500 bg-white px-2 py-1 rounded-full border border-slate-100 shadow-sm">
+            Current Month
+          </span>
+        </CardTitle>
+      </CardHeader>
+
+      <CardContent className="px-0 py-0">
+        <div className="flex flex-col sm:flex-row items-center gap-8">
+         
+          {/* ─── LEFT: DONUT CHART ─── */}
+          <div className="relative w-40 h-40 flex-shrink-0">
+            {/* The Pie Chart Circle */}
+            <div
+              className="w-full h-full rounded-full shadow-inner"
+              style={{ background: gradientString }}
+            />
+           
+            {/* The Center Hole (makes it a donut) */}
+            <div className="absolute inset-0 m-auto w-28 h-28 bg-white rounded-full flex flex-col items-center justify-center shadow-sm">
+              <span className="text-[10px] text-slate-400 font-medium uppercase tracking-wider">Total</span>
+              <span className="text-sm font-bold text-slate-800">
+                ₹{(totalAmount / 1000).toFixed(1)}k
+              </span>
+            </div>
+          </div>
+
+          {/* ─── RIGHT: LEGEND ─── */}
+          <div className="flex-1 w-full grid grid-cols-1 gap-3">
+            {OVERVIEW_DATA.map((item) => {
+              const percentage = ((item.amount / totalAmount) * 100).toFixed(1);
+             
+              return (
+                <div key={item.label} className="flex items-center justify-between group">
+                  <div className="flex items-center gap-3">
+                    {/* Color Dot */}
+                    <div className={`w-3 h-3 rounded-full ${item.colorClass} ring-2 ring-white shadow-sm`} />
+                   
+                    {/* Label & Percent */}
+                    <div className="flex flex-col">
+                      <span className="text-[11px] font-semibold text-slate-700">{item.label}</span>
+                      <span className="text-[9px] text-slate-400">{percentage}%</span>
                     </div>
                   </div>
-                  <p className="text-[10px] text-gray-500">
-                    View detailed transactions by selecting a specific account or
-                    debit card on the left.
-                  </p>
-                </CardContent>
-              </Card>
+
+                  {/* Amount */}
+                  <div className="text-right">
+                    <span className="text-[11px] font-bold text-slate-800">
+                      ₹{item.amount.toLocaleString('en-IN')}
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+           
+            {/* Divider */}
+            <div className="h-px bg-slate-200 w-full my-1"></div>
+           
+            {/* Total Row */}
+            <div className="flex justify-between items-center px-1">
+                <span className="text-[11px] font-medium text-slate-500">Total Budget</span>
+                <span className="text-xs font-bold text-slate-900">₹{totalAmount.toLocaleString('en-IN')}</span>
+            </div>
+          </div>
+
+        </div>
+      </CardContent>
+    </Card>
             ) : selectedAccount ? (
               <Card className="rounded-xl shadow-md text-white p-5 relative overflow-hidden bg-gradient-to-br from-[#111827] via-[#1f2937] to-[#020617] border border-white/10">
                 {/* Decorative glows */}
@@ -982,363 +992,378 @@ export function Dashboard({ onNavigate }: { onNavigate?: (page: PageType) => voi
             ) : null}
 
             {/* ───────── Enhanced Transactions Card ───────── */}
-            <Card className="rounded-xl shadow-sm">
-              {/* HEADER WITH FILTERS */}
-              <CardHeader className="pb-0">
-                <div className="flex justify-between items-center mb-2">
-                  <div>
-                    <CardTitle className="text-sm">Recent Transactions</CardTitle>
-                    <span className="text-[#233b77] text-[11px]">
-                      {isOverview
-                        ? `All Accounts (${filteredTransactions.length} transactions)`
-                        : `${selectedAccount?.title} (${filteredTransactions.length} transactions)`
-                      }
-                    </span>
-                  </div>
+            {/* ───────── Enhanced Transactions Card ───────── */}
+<Card className="rounded-xl shadow-sm">
+  {/* HEADER WITH FILTERS */}
+  <CardHeader className="pb-0">
+    <div className="flex justify-between items-center mb-2">
+      <div className="flex-1">
+        <CardTitle className="text-sm">Recent Transactions</CardTitle>
+        <div className="flex items-center gap-2 mt-2">
+          <label className="text-[10px] font-semibold text-gray-700">
+            Select Card/Account:
+          </label>
+          <select
+            className="text-[10px] p-1.5 border rounded bg-white"
+            value={selectedCardFilter}
+            onChange={(e) => setSelectedCardFilter(e.target.value)}
+          >
+            <option value="all">All Accounts</option>
+            {accountsData.map(acc => (
+              <option key={acc.id} value={acc.id}>
+                {acc.title} (••••{acc.number})
+              </option>
+            ))}
+          </select>
+          <span className="text-[#233b77] text-[10px] ml-2">
+            ({filteredTransactions.length} transactions)
+          </span>
+        </div>
+      </div>
 
-                  <div className="flex items-center gap-2">
-                    {/* Show/Hide Filters Button */}
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="text-[10px] h-7"
-                      onClick={() => setShowFilters(!showFilters)}
-                    >
-                      <Filter className="w-3 h-3 mr-1" />
-                      {showFilters ? "Hide Filters" : "Show Filters"}
-                    </Button>
+      <div className="flex items-center gap-2">
+        {/* Show/Hide Filters Button */}
+        <Button
+          variant="outline"
+          size="sm"
+          className="text-[10px] h-7"
+          onClick={() => setShowFilters(!showFilters)}
+        >
+          <Filter className="w-3 h-3 mr-1" />
+          {showFilters ? "Hide Filters" : "Show Filters"}
+        </Button>
 
-                    {/* Print */}
-                    <button
-                      className="p-1 hover:bg-gray-100 rounded"
-                      title="Print"
-                      onClick={() => {
-                        const tableHtml = document.getElementById("recent-transactions-table")?.innerHTML;
-                        if (tableHtml) {
-                          printRecentTransactions(`<table>${tableHtml}</table>`);
-                        }
-                      }}
-                    >
-                      <Printer className="w-4 h-4 text-[#233b77]" />
-                    </button>
-                  </div>
-                </div>
+        {/* Print */}
+        <button
+          className="p-1 hover:bg-gray-100 rounded"
+          title="Print"
+          onClick={() => {
+            const tableHtml = document.getElementById("recent-transactions-table")?.innerHTML;
+            if (tableHtml) {
+              printRecentTransactions(`<table>${tableHtml}</table>`);
+            }
+          }}
+        >
+          <Printer className="w-4 h-4 text-[#233b77]" />
+        </button>
+      </div>
+    </div>
 
-                {/* EXPANDABLE FILTERS SECTION */}
-                {showFilters && (
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3 p-3 bg-gray-50 rounded-lg mb-3 border">
-                    {/* Date Range Dropdown */}
+    {/* EXPANDABLE FILTERS SECTION */}
+    {showFilters && (
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 p-3 bg-gray-50 rounded-lg mb-3 border">
+        {/* Date Range Dropdown */}
+        <div>
+          <label className="text-[10px] font-semibold text-gray-700 mb-1 block">
+            Date Range
+          </label>
+          <select
+            className="w-full text-[10px] p-1.5 border rounded bg-white"
+            value={dateRange}
+            onChange={(e) => setDateRange(e.target.value)}
+          >
+            {dateRangeOptions.map(option => (
+              <option key={option.id} value={option.id}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Custom Date Range - Only show when "custom" is selected */}
+        {dateRange === "custom" && (
+          <div className="md:col-span-2 grid grid-cols-2 gap-2">
+            <div>
+              <label className="text-[10px] font-semibold text-gray-700 mb-1 block">
+                From
+              </label>
+              <input
+                type="date"
+                className="w-full text-[10px] p-1.5 border rounded bg-white"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+              />
+            </div>
+            <div>
+              <label className="text-[10px] font-semibold text-gray-700 mb-1 block">
+                To
+              </label>
+              <input
+                type="date"
+                className="w-full text-[10px] p-1.5 border rounded bg-white"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Category Filter */}
+        <div>
+          <label className="text-[10px] font-semibold text-gray-700 mb-1 block">
+            Category
+          </label>
+          <select
+            className="w-full text-[10px] p-1.5 border rounded bg-white"
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
+          >
+            {categoryOptions.map(category => (
+              <option key={category} value={category}>
+                {category}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Transaction Type */}
+        <div>
+          <label className="text-[10px] font-semibold text-gray-700 mb-1 block">
+            Type
+          </label>
+          <select
+            className="w-full text-[10px] p-1.5 border rounded bg-white"
+            value={transactionType}
+            onChange={(e) => setTransactionType(e.target.value as any)}
+          >
+            <option value="all">All Transactions</option>
+            <option value="credit">Credits Only</option>
+            <option value="debit">Debits Only</option>
+          </select>
+        </div>
+
+        {/* Sort By */}
+        <div>
+          <label className="text-[10px] font-semibold text-gray-700 mb-1 block">
+            Sort By
+          </label>
+          <select
+            className="w-full text-[10px] p-1.5 border rounded bg-white"
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value as any)}
+          >
+            <option value="date-desc">Date (Newest First)</option>
+            <option value="date-asc">Date (Oldest First)</option>
+            <option value="amount-desc">Amount (High to Low)</option>
+            <option value="amount-asc">Amount (Low to High)</option>
+          </select>
+        </div>
+
+        {/* Search and Date Inputs */}
+        <div className="md:col-span-2">
+          <label className="text-[10px] font-semibold text-gray-700 mb-1 block">
+            Search
+          </label>
+          <div className="flex gap-2">
+            <div className="flex-1 flex items-center border rounded px-2 py-1 bg-white">
+              <Search className="w-3 h-3 text-[#233b77]" />
+              <input
+                type="text"
+                placeholder="Search transactions..."
+                className="text-[10px] ml-1 flex-1 bg-transparent outline-none"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+            <div className="flex items-center border rounded px-2 py-1 bg-white">
+              <Calendar className="w-3 h-3 text-[#233b77]" />
+              <input
+                type="date"
+                className="text-[10px] bg-transparent outline-none"
+                value={selectedDate}
+                onChange={(e) => setSelectedDate(e.target.value)}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Clear Filters Button */}
+        <div className="md:col-span-2 flex items-end">
+          <Button
+            variant="outline"
+            size="sm"
+            className="text-[10px] h-7 w-full"
+            onClick={() => {
+              setSearchQuery("");
+              setSelectedDate("");
+              setDateRange("last30");
+              setSelectedCategory("All Categories");
+              setTransactionType("all");
+              setSortBy("date-desc");
+              setStartDate("");
+              setEndDate("");
+              setSelectedCardFilter("all");
+            }}
+          >
+            Clear All Filters
+          </Button>
+        </div>
+      </div>
+    )}
+
+    {/* QUICK STATS BAR */}
+    <div className="grid grid-cols-4 gap-2 px-2 py-2 bg-blue-50 rounded-lg">
+      <div className="text-center">
+        <p className="text-[9px] text-gray-600">Total Credits</p>
+        <p className="text-[11px] font-bold text-green-600">
+          ₹{totalCredits.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+        </p>
+      </div>
+      <div className="text-center">
+        <p className="text-[9px] text-gray-600">Total Debits</p>
+        <p className="text-[11px] font-bold text-red-600">
+          ₹{totalDebits.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+        </p>
+      </div>
+      <div className="text-center">
+        <p className="text-[9px] text-gray-600">Net Flow</p>
+        <p className={`text-[11px] font-bold ${netFlow >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+          {netFlow >= 0 ? '+' : ''}₹{Math.abs(netFlow).toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+        </p>
+      </div>
+      <div className="text-center">
+        <p className="text-[9px] text-gray-600">Transactions</p>
+        <p className="text-[11px] font-bold text-gray-800">
+          {filteredTransactions.length}
+        </p>
+      </div>
+    </div>
+  </CardHeader>
+
+  <CardContent className="pt-3 pb-2 max-h-96 overflow-y-auto no-scrollbar">
+    <div id="recent-transactions-table">
+      {/* TABLE HEADER */}
+      <div className="grid grid-cols-5 px-2 py-2 text-[10px] font-semibold bg-gray-100 text-gray-700 border-b rounded-t">
+        <span className="flex items-center gap-1">
+          Date
+          <ChevronDown className="w-3 h-3" />
+        </span>
+        <span>Name</span>
+        <span>Description</span>
+        <span className="text-right">Amount</span>
+        <span className="text-right">Current Balance</span>
+      </div>
+
+      {/* TRANSACTION ROWS */}
+      {limitedTransactions.length > 0 ? (
+        limitedTransactions.map((txn) => {
+          const rowKey = `${txn.accountId}-${txn.id}`;
+          const isOpen = expandedRow === rowKey;
+
+          return (
+            <div key={rowKey}>
+              <div
+                className="grid grid-cols-5 gap-2 px-2 py-2.5 text-[10px] border-b hover:bg-blue-50 transition cursor-pointer"
+                onClick={() => setExpandedRow(isOpen ? null : rowKey)}
+              >
+                <span className="font-medium">{txn.date}</span>
+                <span className="font-semibold truncate">{txn.label}</span>
+                <span className="truncate text-gray-600">{txn.category}</span>
+                <span
+                  className={`font-bold text-right ${txn.type === "credit" ? "text-green-600" : "text-red-600"}`}
+                >
+                  {txn.amount}
+                </span>
+                <span className="text-right font-semibold truncate">
+                  {txn.currentBalance}
+                </span>
+              </div>
+
+              {/* EXPANDED DETAILS */}
+              {isOpen && (
+                <div className="bg-white border border-gray-200 rounded-md p-3 mt-1 text-[10px] space-y-3 shadow-sm">
+                  <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="text-[10px] font-semibold text-gray-700 mb-1 block">
-                        Date Range
-                      </label>
-                      <select
-                        className="w-full text-[10px] p-1.5 border rounded bg-white"
-                        value={dateRange}
-                        onChange={(e) => setDateRange(e.target.value)}
-                      >
-                        {dateRangeOptions.map(option => (
-                          <option key={option.id} value={option.id}>
-                            {option.label}
-                          </option>
-                        ))}
-                      </select>
+                      <p className="text-gray-500">Transaction ID</p>
+                      <p className="font-semibold text-gray-900">{txn.id}</p>
                     </div>
-
-                    {/* Custom Date Range - Only show when "custom" is selected */}
-                    {dateRange === "custom" && (
-                      <div className="md:col-span-2 grid grid-cols-2 gap-2">
-                        <div>
-                          <label className="text-[10px] font-semibold text-gray-700 mb-1 block">
-                            From
-                          </label>
-                          <input
-                            type="date"
-                            className="w-full text-[10px] p-1.5 border rounded bg-white"
-                            value={startDate}
-                            onChange={(e) => setStartDate(e.target.value)}
-                          />
-                        </div>
-                        <div>
-                          <label className="text-[10px] font-semibold text-gray-700 mb-1 block">
-                            To
-                          </label>
-                          <input
-                            type="date"
-                            className="w-full text-[10px] p-1.5 border rounded bg-white"
-                            value={endDate}
-                            onChange={(e) => setEndDate(e.target.value)}
-                          />
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Category Filter */}
                     <div>
-                      <label className="text-[10px] font-semibold text-gray-700 mb-1 block">
-                        Category
-                      </label>
-                      <select
-                        className="w-full text-[10px] p-1.5 border rounded bg-white"
-                        value={selectedCategory}
-                        onChange={(e) => setSelectedCategory(e.target.value)}
-                      >
-                        {categoryOptions.map(category => (
-                          <option key={category} value={category}>
-                            {category}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-
-                    {/* Transaction Type */}
-                    <div>
-                      <label className="text-[10px] font-semibold text-gray-700 mb-1 block">
-                        Type
-                      </label>
-                      <select
-                        className="w-full text-[10px] p-1.5 border rounded bg-white"
-                        value={transactionType}
-                        onChange={(e) => setTransactionType(e.target.value as any)}
-                      >
-                        <option value="all">All Transactions</option>
-                        <option value="credit">Credits Only</option>
-                        <option value="debit">Debits Only</option>
-                      </select>
-                    </div>
-
-                    {/* Sort By */}
-                    <div>
-                      <label className="text-[10px] font-semibold text-gray-700 mb-1 block">
-                        Sort By
-                      </label>
-                      <select
-                        className="w-full text-[10px] p-1.5 border rounded bg-white"
-                        value={sortBy}
-                        onChange={(e) => setSortBy(e.target.value as any)}
-                      >
-                        <option value="date-desc">Date (Newest First)</option>
-                        <option value="date-asc">Date (Oldest First)</option>
-                        <option value="amount-desc">Amount (High to Low)</option>
-                        <option value="amount-asc">Amount (Low to High)</option>
-                      </select>
-                    </div>
-
-                    {/* Search and Date Inputs */}
-                    <div className="md:col-span-2">
-                      <label className="text-[10px] font-semibold text-gray-700 mb-1 block">
-                        Search
-                      </label>
-                      <div className="flex gap-2">
-                        <div className="flex-1 flex items-center border rounded px-2 py-1 bg-white">
-                          <Search className="w-3 h-3 text-[#233b77]" />
-                          <input
-                            type="text"
-                            placeholder="Search transactions..."
-                            className="text-[10px] ml-1 flex-1 bg-transparent outline-none"
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                          />
-                        </div>
-                        <div className="flex items-center border rounded px-2 py-1 bg-white">
-                          <Calendar className="w-3 h-3 text-[#233b77]" />
-                          <input
-                            type="date"
-                            className="text-[10px] bg-transparent outline-none"
-                            value={selectedDate}
-                            onChange={(e) => setSelectedDate(e.target.value)}
-                          />
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Clear Filters Button */}
-                    <div className="md:col-span-2 flex items-end">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="text-[10px] h-7 w-full"
-                        onClick={() => {
-                          setSearchQuery("");
-                          setSelectedDate("");
-                          setDateRange("last30");
-                          setSelectedCategory("All Categories");
-                          setTransactionType("all");
-                          setSortBy("date-desc");
-                          setStartDate("");
-                          setEndDate("");
-                        }}
-                      >
-                        Clear All Filters
-                      </Button>
-                    </div>
-                  </div>
-                )}
-
-                {/* QUICK STATS BAR */}
-                <div className="grid grid-cols-4 gap-2 px-2 py-2 bg-blue-50 rounded-lg">
-                  <div className="text-center">
-                    <p className="text-[9px] text-gray-600">Total Credits</p>
-                    <p className="text-[11px] font-bold text-green-600">
-                      ₹{totalCredits.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
-                    </p>
-                  </div>
-                  <div className="text-center">
-                    <p className="text-[9px] text-gray-600">Total Debits</p>
-                    <p className="text-[11px] font-bold text-red-600">
-                      ₹{totalDebits.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
-                    </p>
-                  </div>
-                  <div className="text-center">
-                    <p className="text-[9px] text-gray-600">Net Flow</p>
-                    <p className={`text-[11px] font-bold ${netFlow >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                      {netFlow >= 0 ? '+' : ''}₹{Math.abs(netFlow).toLocaleString('en-IN', { maximumFractionDigits: 0 })}
-                    </p>
-                  </div>
-                  <div className="text-center">
-                    <p className="text-[9px] text-gray-600">Transactions</p>
-                    <p className="text-[11px] font-bold text-gray-800">
-                      {filteredTransactions.length}
-                    </p>
-                  </div>
-                </div>
-              </CardHeader>
-
-              <CardContent className="pt-3 pb-2 max-h-96 overflow-y-auto no-scrollbar">
-                <div id="recent-transactions-table">
-                  {/* TABLE HEADER */}
-                  <div className="grid grid-cols-5 px-2 py-2 text-[10px] font-semibold bg-gray-100 text-gray-700 border-b rounded-t">
-                    <span className="flex items-center gap-1">
-                      Date
-                      <ChevronDown className="w-3 h-3" />
-                    </span>
-                    <span>Name</span>
-                    <span>Description</span>
-                    <span className="text-right">Amount</span>
-                    <span className="text-right">Current Balance</span>
-                  </div>
-
-                  {/* TRANSACTION ROWS */}
-                  {limitedTransactions.length > 0 ? (
-                    limitedTransactions.map((txn) => {
-                      const rowKey = `${txn.accountId}-${txn.id}`;
-                      const isOpen = expandedRow === rowKey;
-
-                      return (
-                        <div key={rowKey}>
-                          <div
-                            className="grid grid-cols-5 gap-2 px-2 py-2.5 text-[10px] border-b hover:bg-blue-50 transition cursor-pointer"
-                            onClick={() => setExpandedRow(isOpen ? null : rowKey)}
-                          >
-                            <span className="font-medium">{txn.date}</span>
-                            <span className="font-semibold truncate">{txn.label}</span>
-                            <span className="truncate text-gray-600">{txn.category}</span>
-                            <span
-                              className={`font-bold text-right ${txn.type === "credit" ? "text-green-600" : "text-red-600"
-                                }`}
-                            >
-                              {txn.amount}
-                            </span>
-                            <span className="text-right font-semibold truncate">
-                              {txn.currentBalance}
-                            </span>
-                          </div>
-
-                          {/* EXPANDED DETAILS */}
-                          {isOpen && (
-                            <div className="bg-white border border-gray-200 rounded-md p-3 mt-1 text-[10px] space-y-3 shadow-sm">
-                              <div className="grid grid-cols-2 gap-3">
-                                <div>
-                                  <p className="text-gray-500">Transaction ID</p>
-                                  <p className="font-semibold text-gray-900">{txn.id}</p>
-                                </div>
-                                <div>
-                                  <p className="text-gray-500">Account</p>
-                                  <p className="font-semibold text-gray-900">
-                                    {txn.accountTitle} (••••{txn.accountNumber})
-                                  </p>
-                                </div>
-                                <div>
-                                  <p className="text-gray-500">Purchased On</p>
-                                  <p className="font-semibold text-gray-900">{txn.purchased}</p>
-                                </div>
-                                <div>
-                                  <p className="text-gray-500">Posted On</p>
-                                  <p className="font-semibold text-gray-900">{txn.date}</p>
-                                </div>
-                              </div>
-
-                              {txn.location && (
-                                <div className="flex items-center gap-1 text-gray-600">
-                                  <MapPin className="w-3 h-3" style={{ color: GOLD }} />
-                                  <span className="font-medium text-[#233b77]">
-                                    {txn.location}
-                                  </span>
-                                </div>
-                              )}
-
-                              <div className="flex justify-between items-center">
-                                <Button
-                                  variant="default"
-                                  size="sm"
-                                  className="bg-[#233b77] hover:bg-[#1d2f60] text-[9px] h-6 px-2"
-                                >
-                                  Dispute Transaction
-                                </Button>
-                                <div className="flex gap-2">
-                                  <button className="flex items-center gap-1 text-[#233b77] text-[9px] hover:underline">
-                                    <FileText className="w-3 h-3" /> Receipt
-                                  </button>
-                                  <button className="flex items-center gap-1 text-[#233b77] text-[9px] hover:underline">
-                                    <Download className="w-3 h-3" /> Export
-                                  </button>
-                                </div>
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      );
-                    })
-                  ) : (
-                    <div className="text-center py-8">
-                      <p className="text-gray-500 text-sm">No transactions found</p>
-                      <p className="text-gray-400 text-xs mt-1">
-                        Try changing your filters or search terms
+                      <p className="text-gray-500">Account</p>
+                      <p className="font-semibold text-gray-900">
+                        {txn.accountTitle} (••••{txn.accountNumber})
                       </p>
                     </div>
+                    <div>
+                      <p className="text-gray-500">Purchased On</p>
+                      <p className="font-semibold text-gray-900">{txn.purchased}</p>
+                    </div>
+                    <div>
+                      <p className="text-gray-500">Posted On</p>
+                      <p className="font-semibold text-gray-900">{txn.date}</p>
+                    </div>
+                  </div>
+
+                  {txn.location && (
+                    <div className="flex items-center gap-1 text-gray-600">
+                      <MapPin className="w-3 h-3" style={{ color: GOLD }} />
+                      <span className="font-medium text-[#233b77]">
+                        {txn.location}
+                      </span>
+                    </div>
                   )}
+
+                  <div className="flex justify-between items-center">
+                    <Button
+                      variant="default"
+                      size="sm"
+                      className="bg-[#233b77] hover:bg-[#1d2f60] text-[9px] h-6 px-2"
+                    >
+                      Dispute Transaction
+                    </Button>
+                    <div className="flex gap-2">
+                      <button className="flex items-center gap-1 text-[#233b77] text-[9px] hover:underline">
+                        <FileText className="w-3 h-3" /> Receipt
+                      </button>
+                      <button className="flex items-center gap-1 text-[#233b77] text-[9px] hover:underline">
+                        <Download className="w-3 h-3" /> Export
+                      </button>
+                    </div>
+                  </div>
                 </div>
+              )}
+            </div>
+          );
+        })
+      ) : (
+        <div className="text-center py-8">
+          <p className="text-gray-500 text-sm">No transactions found</p>
+          <p className="text-gray-400 text-xs mt-1">
+            Try changing your filters or search terms
+          </p>
+        </div>
+      )}
+    </div>
 
-                {filteredTransactions.length > 10 && (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="w-full text-[10px] mt-3 border-dashed"
-                    onClick={() => setShowAll(!showAll)}
-                  >
-                    {showAll
-                      ? `Show Less (Viewing ${limitedTransactions.length} of ${filteredTransactions.length})`
-                      : `View All Transactions (${filteredTransactions.length}) →`}
-                  </Button>
-                )}
-              </CardContent>
+    {filteredTransactions.length > 10 && (
+      <Button
+        variant="outline"
+        size="sm"
+        className="w-full text-[10px] mt-3 border-dashed"
+        onClick={() => setShowAll(!showAll)}
+      >
+        {showAll
+          ? `Show Less (Viewing ${limitedTransactions.length} of ${filteredTransactions.length})`
+          : `View All Transactions (${filteredTransactions.length}) →`}
+      </Button>
+    )}
+  </CardContent>
 
-              {/* FOOTER WITH DOWNLOAD OPTION */}
-              <div className="px-4 py-2 border-t bg-gray-50 flex justify-between items-center">
-                <span className="text-[10px] text-gray-500">
-                  Showing {limitedTransactions.length} of {filteredTransactions.length} transactions
-                </span>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="text-[10px] h-7"
-                  onClick={handleDownload}
-                >
-                  <Download className="w-3 h-3 mr-1" />
-                  Download
-                </Button>
-              </div>
-            </Card>
+  {/* FOOTER WITH DOWNLOAD OPTION */}
+  <div className="px-4 py-2 border-t bg-gray-50 flex justify-between items-center">
+    <span className="text-[10px] text-gray-500">
+      Showing {limitedTransactions.length} of {filteredTransactions.length} transactions
+    </span>
+    <Button
+      variant="ghost"
+      size="sm"
+      className="text-[10px] h-7"
+      onClick={handleDownload}
+    >
+      <Download className="w-3 h-3 mr-1" />
+      Download
+    </Button>
+  </div>
+</Card>
 
             <OffersSection />
           </div>
@@ -1451,7 +1476,7 @@ export function Dashboard({ onNavigate }: { onNavigate?: (page: PageType) => voi
                 >
                   {showMoreProducts
                     ? "View Less"
-                    : "View All Bill Payments for You"}{" "}
+                    : "View All Offers for You"}{" "}
                   →
                 </button>
               </CardContent>
@@ -1538,3 +1563,9 @@ export function Dashboard({ onNavigate }: { onNavigate?: (page: PageType) => voi
     </div>
   );
 }
+
+
+
+
+
+
