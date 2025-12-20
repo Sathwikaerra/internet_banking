@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 
 export default function OffersSection() {
   const router = useRouter();
+const GOLD = "#ebc60a";
 
   const offers = [
     {
@@ -15,7 +16,6 @@ export default function OffersSection() {
       desc: "With Flex Loan, get funds from your card's available credit at a fixed APR.",
       icon: CreditCard,
       buttonText: "View Offer",
-      link: "/offers/flex-loan",
     },
     {
       id: 2,
@@ -24,26 +24,23 @@ export default function OffersSection() {
       desc: "We may not have your most recent income information.",
       icon: DollarSign,
       buttonText: "Update Now",
-      link: "/offers/update-income",
     },
-    {
-      id: 3,
-      account: "Jayam Bank® Preferred – 2731",
-      title: "Send foreign wire transfers",
-      desc: "No transfer fee for online international wires (in foreign currency).",
-      icon: Globe,
-      buttonText: "Wire funds",
-      link: "/offers/wire-transfer",
-    },
-    {
-      id: 4,
-      account: "Personal Loan-7006",
-      title: "Jayam Entertainment®",
-      desc: "Book tickets and get exclusive discounts on select events and concerts.",
-      icon: Ticket,
-      buttonText: "Learn More",
-      link: "/offers/entertainment",
-    },
+    // {
+    //   id: 3,
+    //   account: "Jayam Bank® Preferred – 2731",
+    //   title: "Send foreign wire transfers",
+    //   desc: "No transfer fee for online international wires (in foreign currency).",
+    //   icon: Globe,
+    //   buttonText: "Wire funds",
+    // },
+    // {
+    //   id: 4,
+    //   account: "Personal Loan-7006",
+    //   title: "Jayam Entertainment®",
+    //   desc: "Book tickets and get exclusive discounts on select events and concerts.",
+    //   icon: Ticket,
+    //   buttonText: "Learn More",
+    // },
   ];
 
   return (
@@ -64,8 +61,13 @@ export default function OffersSection() {
             </p>
 
             <div className="flex items-center gap-2 mt-1">
-              <Icon className="w-5 h-5 text-blue-600" />
-              <h3 className="text-sm font-semibold text-gray-900">
+  <div className="w-10 h-10 border rounded-full flex items-center justify-center border-[#233b77]">
+                            <Icon
+                              className="w-4 h-4"
+                              style={{ color: GOLD }}
+                            />     
+                            </div>
+                                     <h3 className="text-xs font-semibold text-gray-900">
                 {offer.title}
               </h3>
             </div>
@@ -75,7 +77,6 @@ export default function OffersSection() {
             </p>
 
             <Button
-              onClick={() => router.push(offer.link)}
               className=" w-fit text-[10px] px-3 bg-primary hover:bg-blue-800"
             >
               {offer.buttonText}

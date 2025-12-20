@@ -94,7 +94,7 @@ export default function MerchantOffers() {
             Save with Merchant Offers
           </CardTitle>
           <p className="text-[9px] text-gray-500">
-            Citi ThankYou® Preferred – 2731
+            KAEBAUK ThankYou® Preferred – 2731
           </p>
         </div>
 

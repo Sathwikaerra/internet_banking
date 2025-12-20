@@ -13,7 +13,7 @@ export default function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-5 gap-10 text-[11px]">
 
           <div>
-            <h4 className="font-semibold mb-3">Why Jayam Bank</h4>
+            <h4 className="font-semibold mb-3">Why KAEBAUK Bank</h4>
             <ul className="space-y-2 text-gray-300">
               <li className="hover:text-white cursor-pointer">Our Story</li>
               <li className="hover:text-white cursor-pointer">Careers</li>
