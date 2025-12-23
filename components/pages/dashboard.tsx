@@ -1,6 +1,4 @@
 
-
-
 "use client";
 
 import { useState } from "react";
@@ -33,7 +31,7 @@ import {
   ArrowLeftRight,
   PiggyBank
 } from "lucide-react";
-
+import Rewardpoints from "@/components/pages/Rewardpoints";
 import CIBILScoreCard from "./CIBILScoreCard";
 import OffersSection from "@/components/pages/OffersSection";
 import MerchantOffers from "@/components/pages/MerchantOffers";
@@ -44,11 +42,11 @@ import React, { useMemo } from 'react';
 const GOLD = "#ebc60a";
 
 const OVERVIEW_DATA = [
-  { label: 'EMI', amount: 25000, colorClass: 'bg-red-500', hex: '#ef4444' },       // Red
+  // { label: 'EMI', amount: 25000, colorClass: 'bg-red-500', hex: '#ef4444' },       // Red
   { label: 'Loans', amount: 15000, colorClass: 'bg-orange-500', hex: '#f97316' },  // Orange
-  { label: 'Savings', amount: 50000, colorClass: 'bg-emerald-500', hex: '#10b981' }, // Emerald
+  // { label: 'Savings', amount: 50000, colorClass: 'bg-emerald-500', hex: '#10b981' }, // Emerald
   { label: 'Spendings', amount: 35000, colorClass: 'bg-blue-500', hex: '#3b82f6' },  // Blue
-  { label: 'Remaining', amount: 25000, colorClass: 'bg-indigo-500', hex: '#6366f1' }, // Indigo
+  { label: 'Remaining', amount: 25000, colorClass: 'bg-red-500', hex: 'red' }, // Indigo
 ];
 
 // ─────────────────────────────────────────────
@@ -641,11 +639,11 @@ export function Dashboard({ onNavigate }: { onNavigate?: (page: PageType) => voi
   return (
     <div className="max-w-7xl mx-auto px-4 py-6 space-y-4">
       {/* GRID LAYOUT */}
-      <div className="grid grid-cols-12 gap-4">
+      <div className="grid grid-cols-12 gap-2">
         {/* ───────── LEFT – OVERVIEW + ACCOUNTS + DEBIT + PRODUCTS + CIBIL ───────── */}
         <div className="col-span-12 md:col-span-3">
           {/* HEADER */}
-          <div className="mb-3">
+          <div className="mb-1">
             <h1 className="text-[10px] text-foreground">
               Welcome back, {user?.name?.split(" ")[0] || "User"}! 👋
             </h1>
@@ -661,7 +659,7 @@ export function Dashboard({ onNavigate }: { onNavigate?: (page: PageType) => voi
                 All Bank Accounts
               </p>
               {/* Overview Button */}
-              <div className="mt-2 mb-2 flex justify-start">
+              <div className="mt-1 mb-1 flex justify-start">
                 <button
                   onClick={() => handleSelectAccount("overview")}
                   className={`flex items-center gap-1 px-3 py-1.5 rounded-md text-[10px] font-semibold border transition-all
@@ -690,7 +688,7 @@ export function Dashboard({ onNavigate }: { onNavigate?: (page: PageType) => voi
                       : "border-gray-200 hover:bg-gray-50"
                     }`}
                 >
-                  <div className="flex justify-between px-3 pt-2 pb-1">
+                  <div className="flex justify-between px-3 pt-1 pb-1">
                     <div className="leading-tight">
                       <p
                         className={`font-semibold text-[11px] truncate max-w-[150px]
@@ -830,23 +828,23 @@ export function Dashboard({ onNavigate }: { onNavigate?: (page: PageType) => voi
           <div className="space-y-3">
             {/* OVERVIEW CARD OR BIG ACCOUNT CARD */}
             {isOverview ? (
-               <Card className="rounded-xl shadow-md p-5 bg-gradient-to-br from-white via-slate-50 to-slate-100 border border-slate-200">
-      <CardHeader className="px-0 pt-0 pb-4">
-        <CardTitle className="text-sm font-bold text-slate-800 flex justify-between items-center">
+               <Card className="rounded-xl shadow-md p-3 bg-gradient-to-br from-white via-slate-50 to-slate-100 border border-slate-200">
+      <CardHeader className="px-0 pt-0 pb-1">
+        <CardTitle className="text-xs font-semibold text-gray-800 flex justify-between items-center">
           <div className="flex items-center gap-2">
-            <div className="p-1.5 bg-blue-100 rounded-md">
-                <Wallet className="w-4 h-4 text-blue-600" />
+            <div className="p-0 bg-white-100 rounded-md">
+                <Wallet className="w-4 h-4 text-yellow-500" />
             </div>
             Financial Overview
           </div>
-          <span className="text-[10px] font-normal text-slate-500 bg-white px-2 py-1 rounded-full border border-slate-100 shadow-sm">
+          {/* <span className="text-[10px] font-normal text-slate-500 bg-white px-2 py-1 rounded-full border border-slate-100 shadow-sm">
             Current Month
-          </span>
+          </span> */}
         </CardTitle>
       </CardHeader>
 
       <CardContent className="px-0 py-0">
-        <div className="flex flex-col sm:flex-row items-center gap-8">
+<div className="flex flex-col sm:flex-row sm:items-center gap-2 mt-2">
          
           {/* ─── LEFT: DONUT CHART ─── */}
           <div className="relative w-40 h-40 flex-shrink-0">
@@ -894,13 +892,13 @@ export function Dashboard({ onNavigate }: { onNavigate?: (page: PageType) => voi
             })}
            
             {/* Divider */}
-            <div className="h-px bg-slate-200 w-full my-1"></div>
+            {/* <div className="h-px bg-slate-200 w-full my-1"></div> */}
            
             {/* Total Row */}
-            <div className="flex justify-between items-center px-1">
+            {/* <div className="flex justify-between items-center px-1">
                 <span className="text-[11px] font-medium text-slate-500">Total Budget</span>
                 <span className="text-xs font-bold text-slate-900">₹{totalAmount.toLocaleString('en-IN')}</span>
-            </div>
+            </div> */}
           </div>
 
         </div>
@@ -995,11 +993,18 @@ export function Dashboard({ onNavigate }: { onNavigate?: (page: PageType) => voi
             {/* ───────── Enhanced Transactions Card ───────── */}
 <Card className="rounded-xl shadow-sm">
   {/* HEADER WITH FILTERS */}
-  <CardHeader className="pb-0">
-    <div className="flex justify-between items-center mb-2">
+  <CardHeader className="pb-0 px-2">
+            <CardTitle className="text-xs font-semibold text-gray-800 ">
+
+<div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 ">
       <div className="flex-1">
-        <CardTitle className="text-sm">Recent Transactions</CardTitle>
-        <div className="flex items-center gap-2 mt-2">
+  <div className="flex items-center gap-2">
+            <div className="p-0 bg-white-100 rounded-md ">
+                <ArrowLeftRight className="w-4 h-4 text-yellow-500" />
+            </div>
+            Recent Transactions
+          </div>     
+            <div className="flex items-center gap-2 mt-2">
           <label className="text-[10px] font-semibold text-gray-700">
             Select Card/Account:
           </label>
@@ -1015,9 +1020,7 @@ export function Dashboard({ onNavigate }: { onNavigate?: (page: PageType) => voi
               </option>
             ))}
           </select>
-          <span className="text-[#233b77] text-[10px] ml-2">
-            ({filteredTransactions.length} transactions)
-          </span>
+         
         </div>
       </div>
 
@@ -1033,27 +1036,15 @@ export function Dashboard({ onNavigate }: { onNavigate?: (page: PageType) => voi
           {showFilters ? "Hide Filters" : "Show Filters"}
         </Button>
 
-        {/* Print */}
-        <button
-          className="p-1 hover:bg-gray-100 rounded"
-          title="Print"
-          onClick={() => {
-            const tableHtml = document.getElementById("recent-transactions-table")?.innerHTML;
-            if (tableHtml) {
-              printRecentTransactions(`<table>${tableHtml}</table>`);
-            }
-          }}
-        >
-          <Printer className="w-4 h-4 text-[#233b77]" />
-        </button>
+        
       </div>
     </div>
 
     {/* EXPANDABLE FILTERS SECTION */}
     {showFilters && (
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 p-3 bg-gray-50 rounded-lg mb-3 border">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 p-3 bg-gray-50 rounded-lg mb-3 border">
         {/* Date Range Dropdown */}
-        <div>
+<div className="sm:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-2">
           <label className="text-[10px] font-semibold text-gray-700 mb-1 block">
             Date Range
           </label>
@@ -1201,36 +1192,10 @@ export function Dashboard({ onNavigate }: { onNavigate?: (page: PageType) => voi
       </div>
     )}
 
-    {/* QUICK STATS BAR */}
-    <div className="grid grid-cols-4 gap-2 px-2 py-2 bg-blue-50 rounded-lg">
-      <div className="text-center">
-        <p className="text-[9px] text-gray-600">Total Credits</p>
-        <p className="text-[11px] font-bold text-green-600">
-          ₹{totalCredits.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
-        </p>
-      </div>
-      <div className="text-center">
-        <p className="text-[9px] text-gray-600">Total Debits</p>
-        <p className="text-[11px] font-bold text-red-600">
-          ₹{totalDebits.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
-        </p>
-      </div>
-      <div className="text-center">
-        <p className="text-[9px] text-gray-600">Net Flow</p>
-        <p className={`text-[11px] font-bold ${netFlow >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-          {netFlow >= 0 ? '+' : ''}₹{Math.abs(netFlow).toLocaleString('en-IN', { maximumFractionDigits: 0 })}
-        </p>
-      </div>
-      <div className="text-center">
-        <p className="text-[9px] text-gray-600">Transactions</p>
-        <p className="text-[11px] font-bold text-gray-800">
-          {filteredTransactions.length}
-        </p>
-      </div>
-    </div>
+    </CardTitle>
   </CardHeader>
 
-  <CardContent className="pt-3 pb-2 max-h-96 overflow-y-auto no-scrollbar">
+  <CardContent className=" pb-1 max-h-120 overflow-y-auto no-scrollbar px-2">
     <div id="recent-transactions-table">
       {/* TABLE HEADER */}
       <div className="grid grid-cols-5 px-2 py-2 text-[10px] font-semibold bg-gray-100 text-gray-700 border-b rounded-t">
@@ -1256,17 +1221,18 @@ export function Dashboard({ onNavigate }: { onNavigate?: (page: PageType) => voi
                 className="grid grid-cols-5 gap-2 px-2 py-2.5 text-[10px] border-b hover:bg-blue-50 transition cursor-pointer"
                 onClick={() => setExpandedRow(isOpen ? null : rowKey)}
               >
-                <span className="font-medium">{txn.date}</span>
-                <span className="font-semibold truncate">{txn.label}</span>
-                <span className="truncate text-gray-600">{txn.category}</span>
-                <span
-                  className={`font-bold text-right ${txn.type === "credit" ? "text-green-600" : "text-red-600"}`}
-                >
-                  {txn.amount}
-                </span>
-                <span className="text-right font-semibold truncate">
-                  {txn.currentBalance}
-                </span>
+               <span className="font-medium">{txn.date}</span>
+<span className="font-semibold truncate">{txn.label}</span>
+<span className="truncate text-gray-600">{txn.category}</span>
+
+<span className={`font-bold sm:text-right ${txn.type === "credit" ? "text-green-600" : "text-red-600"}`}>
+  {txn.amount}
+</span>
+
+<span className="sm:text-right font-semibold truncate">
+  {txn.currentBalance}
+</span>
+
               </div>
 
               {/* EXPANDED DETAILS */}
@@ -1438,13 +1404,13 @@ export function Dashboard({ onNavigate }: { onNavigate?: (page: PageType) => voi
 
 
             {/* Bill Payments */}
-            <Card className="shadow-sm rounded-xl mt-3">
-              <CardHeader className="pb-1">
+            <Card className="shadow-sm rounded-xl mt-0 ">
+              <CardHeader className="px-2">
                 <CardTitle className="text-xs font-semibold text-gray-800">
                   Bill Payments
                 </CardTitle>
               </CardHeader>
-              <CardContent className="text-[10px] space-y-3">
+              <CardContent className="text-[10px] space-y-3 px-2">
                 <div className="grid grid-cols-4 gap-4 place-items-center">
                   {(showMoreProducts ? exploreProducts : exploreProducts.slice(0, 4)).map(
                     (item, idx) => {
@@ -1472,7 +1438,7 @@ export function Dashboard({ onNavigate }: { onNavigate?: (page: PageType) => voi
 
                 <button
                   onClick={() => setShowMoreProducts(!showMoreProducts)}
-                  className="w-full flex items-center justify-between text-[11px] font-semibold text-[#233b77] py-2 px-3 bg-blue-50 hover:bg-blue-100 rounded-md"
+                  className="w-full flex items-center justify-between text-[10px] font-semibold text-[#233b77] py-2 px-3 bg-blue-50 hover:bg-blue-100 rounded-md"
                 >
                   {showMoreProducts
                     ? "View Less"
@@ -1484,13 +1450,13 @@ export function Dashboard({ onNavigate }: { onNavigate?: (page: PageType) => voi
 
             {/* Quick Actions */}
             <Card className="shadow-sm rounded-xl mt-3">
-              <CardHeader className="pb-1">
+              <CardHeader className="px-2">
                 <CardTitle className="text-xs font-semibold text-gray-800">
                   Quick Actions
                 </CardTitle>
               </CardHeader>
 
-              <CardContent className="text-[10px] space-y-3">
+              <CardContent className="text-[10px] space-y-3 px-2">
                 <div className="grid grid-cols-4 gap-4 place-items-center ">
                   {(showMoreQuick ? quickActions : quickActions.slice(0, 4)).map(
                     (item, idx) => {
@@ -1516,7 +1482,7 @@ export function Dashboard({ onNavigate }: { onNavigate?: (page: PageType) => voi
                 {/* View More / View Less Button */}
                 <button
                   onClick={() => setShowMoreQuick(!showMoreQuick)}
-                  className="w-full flex items-center justify-between text-[11px] font-semibold text-[#233b77] py-2 px-3 bg-blue-50 hover:bg-blue-100 rounded-md"
+                  className="w-full flex items-center justify-between text-[10px] font-semibold text-[#233b77] py-2 px-3 bg-blue-50 hover:bg-blue-100 rounded-md"
                 >
                   {showMoreQuick ? "View Less" : "View All Quick Actions"} →
                 </button>
@@ -1526,34 +1492,9 @@ export function Dashboard({ onNavigate }: { onNavigate?: (page: PageType) => voi
 
 
             {/* Reward Points */}
-            <div id="transactions-print">
-              <Card className="rounded-xl shadow-sm">
-                <CardHeader className="pb-1">
-                  <CardTitle className="text-xs">
-                    Total Reward Points
-                  </CardTitle>
-                  <CardDescription className="text-[10px]">
-                    {isOverview
-                      ? "Across all accounts & cards"
-                      : `For account ending in ${selectedAccount?.number || ""}`}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="flex justify-between items-center">
-                  <p className="text-xl font-bold">
-                    {isOverview
-                      ? totalPoints.toLocaleString("en-IN")
-                      : selectedAccount?.points || "0"}
-                  </p>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="text-[10px] px-3 bg-[#233b77] text-white hover:bg-[#1d2f60]"
-                  >
-                    Redeem →
-                  </Button>
-                </CardContent>
-              </Card>
-            </div>
+           
+            {/* </Rewardpoints> */}
+            <Rewardpoints />
           </div>
         </div>
       </div>

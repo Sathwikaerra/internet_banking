@@ -144,11 +144,11 @@ const menuItems: MenuItem[] = [
         id: "cards",
         icon: <FileText className="w-4 h-4" />,
       },
-      {
-        label: "Rewards",
-        id: "cards",
-        icon: <TrendingUp className="w-4 h-4" />,
-      },
+      // {
+      //   label: "Rewards",
+      //   id: "cards",
+      //   icon: <TrendingUp className="w-4 h-4" />,
+      // },
     ],
   },
   {
