@@ -47,6 +47,30 @@ const merchantData = [
     daysLeft: "29d left",
     isNew: true,
   },
+   {
+    id: 6,
+    name: "Walmart",
+    icon: "/icons/11390733.jpg",
+    cashback: "4% Back",
+    daysLeft: "29d left",
+    isNew: true,
+  },
+  {
+    id: 7,
+    name: "Chipotle",
+    icon: "/icons/person-shopping.jpg",
+    cashback: "10% Back",
+    daysLeft: "29d left",
+    isNew: true,
+  },
+  {
+    id: 8,
+    name: "BestBuy",
+    icon: "/icons/wallmartpng.jpg",
+    cashback: "3% Back",
+    daysLeft: "29d left",
+    isNew: true,
+  },
 ];
 
 export default function MerchantOffers() {
@@ -54,7 +78,7 @@ export default function MerchantOffers() {
   const [selectedOffer, setSelectedOffer] = useState(null);
   const [activated, setActivated] = useState(false);
 
-  const visible = showAll ? merchantData : merchantData.slice(0, 6);
+  const visible = showAll ? merchantData : merchantData.slice(0, 9);
 
   return (
     <>
@@ -154,7 +178,7 @@ export default function MerchantOffers() {
             }}
           >
             <motion.div
-              className="bg-white w-[85%] max-w-xs p-6 rounded-2xl shadow-2xl"
+              className="bg-white w-[100%] max-w-xs p-6 rounded-2xl shadow-2xl"
               initial={{ scale: 0.6, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.6, opacity: 0 }}

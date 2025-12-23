@@ -9,22 +9,23 @@ export default function OffersSection() {
 const GOLD = "#ebc60a";
 
   const offers = [
-    {
+      {
       id: 1,
-      account: "Jayam Bank® Preferred – 2731",
-      title: "A loan from your available credit",
-      desc: "With Flex Loan, get funds from your card's available credit at a fixed APR.",
-      icon: CreditCard,
-      buttonText: "View Offer",
-    },
-    {
-      id: 2,
       account: "Costco card",
       title: "Keep us up to date",
       desc: "We may not have your most recent income information.",
       icon: DollarSign,
       buttonText: "Update Now",
     },
+    {
+      id: 2,
+      account: "Jayam Bank® Preferred – 2731",
+      title: "A loan from your available credit",
+      desc: "With Flex Loan, get funds from your card's available credit at a fixed APR.",
+      icon: CreditCard,
+      buttonText: "View Offer",
+    },
+ 
     // {
     //   id: 3,
     //   account: "Jayam Bank® Preferred – 2731",
@@ -44,11 +45,11 @@ const GOLD = "#ebc60a";
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-2 gap-4 mt-4">
+    <div className=" grid-cols-1 sm:grid-cols-3 lg:grid-cols-2 gap-4 mt-4 d-flex flex-col">
       {offers.map((offer) => {
         const Icon = offer.icon;
         return (
-          <Card key={offer.id} className="p-4 rounded-xl shadow-sm relative">
+          <Card key={offer.id} className="p-4 rounded-xl shadow-sm relative mb-2">
             
             {/* Close button */}
             <button className="absolute top-2 right-2 text-gray-400 hover:text-gray-700">

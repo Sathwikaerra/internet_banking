@@ -1331,7 +1331,7 @@ export function Dashboard({ onNavigate }: { onNavigate?: (page: PageType) => voi
   </div>
 </Card>
 
-            <OffersSection />
+            {/* <OffersSection /> */}
           </div>
         </div>
 
@@ -1488,13 +1488,12 @@ export function Dashboard({ onNavigate }: { onNavigate?: (page: PageType) => voi
                 </button>
               </CardContent>
             </Card>
-
-
-
             {/* Reward Points */}
            
             {/* </Rewardpoints> */}
             <Rewardpoints />
+                        <OffersSection />
+
           </div>
         </div>
       </div>
